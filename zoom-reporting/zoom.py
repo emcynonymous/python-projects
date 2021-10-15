@@ -12,6 +12,7 @@ class Zoom:
         self.api_secret = api_secret
         self.base_url = "https://api.zoom.us/v2"
         self.reports_url = f"{self.base_url}/report/meetings"
+        self.meetings_url = f"{self.base_url}/meetings"
         self.jwt_token_exp = 1800
         self.jwt_token_algo = "HS256"
 
@@ -19,6 +20,23 @@ class Zoom:
                                  next_page_token: Optional[str] = None) -> Response:
         url: str = f"{self.reports_url}/{meeting_id}/participants"
         query_params: Dict[str, Union[int, str]] = {"page_size": 300}
+
+        if next_page_token:
+            query_params.update({"next_page_token": next_page_token})
+
+        r: Response = requests.get(url,
+                                   headers={"Authorization": f"Bearer {jwt_token.decode('utf-8')}"},
+                                   params=query_params)
+
+        return r
+    
+    def get_meeting_registrants(self, meeting_id: str, jwt_token: bytes,
+                                 next_page_token: Optional[str] = None) -> Response:
+        url: str = f"{self.meetings_url}/{meeting_id}/registrants"
+        print(f" url string {url}")
+
+        query_params: Dict[str, Union[int, str]] = {"page_size": 300}
+
         if next_page_token:
             query_params.update({"next_page_token": next_page_token})
 
