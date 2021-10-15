@@ -1,6 +1,5 @@
 #!/bin/sh
 
-export ZOOM_API_KEY=yourZoomApiKeyHere
-export ZOOM_API_SECRET=yourZoomApiSecretHere
-export ZOOM_MEETING_ID=yourZoomMeetingIdHere
-
+export ZOOM_API_KEY='xwJWlR7wQCq1CgbA6v2bgw'
+export ZOOM_API_SECRET='oFUH1tV5GYarYFzCdtGU7di5FVCCvJaZEjEd'
+export ZOOM_MEETING_ID='88184787692'

@@ -17,7 +17,6 @@ class Googl:
 
     def get_folder_id(self, folder_name: str) -> str:
         folders: dict = self.drive.files().list(q="mimeType='application/vnd.google-apps.folder'").execute()
-        print(folders)
         folder_id = [x.get("id") for x in folders.get("files") if x.get("name") == folder_name]
 
         return folder_id[0]

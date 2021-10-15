@@ -13,6 +13,7 @@ ZOOM_API_SECRET = os.environ.get("ZOOM_API_SECRET")
 ZOOM_MEETING_ID = os.environ.get("ZOOM_MEETING_ID")
 
 SERVICE_ACCOUNT_FILE = f".secrets/{os.listdir('.secrets')[0]}"
+
 SCOPES = ["https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.file"]
 
 
@@ -26,11 +27,11 @@ if __name__ == "__main__":
     while token := response.json().get("next_page_token"):
         response = zoom.get_meeting_participants(ZOOM_MEETING_ID, jwt_token, token)
         list_of_participants += response.json().get("participants")
-        print('{list_of_participants}')
 
-    df: DataFrame = pd.DataFrame(list_of_participants) #.drop(columns=["attentiveness_score"])
-    #join_time = pd.to_datetime(df.join_time).dt.tz_convert("Australia/Sydney")
-    #leave_time = pd.to_datetime(df.leave_time).dt.tz_convert("Australia/Sydney")
+    df: DataFrame = pd.DataFrame(list_of_participants).drop(columns=["attentiveness_score"])
+    #print(df.info())
+    df.join_time = pd.to_datetime(df.join_time).dt.tz_convert("Asia/Singapore")
+    df.leave_time = pd.to_datetime(df.leave_time).dt.tz_convert("Asia/Singapore")
 
     df.sort_values(["id", "name", "join_time"], inplace=True)
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
 
     googl = Googl(SERVICE_ACCOUNT_FILE, SCOPES)
 
-    zoom_folder_id: str = googl.get_folder_id("Zoom")
+    zoom_folder_id: str = googl.get_folder_id("Zoom") #Zoom
     sheet_id = googl.create_new_sheet(output_file, zoom_folder_id)
     result = googl.insert_df_to_sheet(sheet_id, output_df)
     sheet_link = googl.get_sheet_link(result.get("spreadsheetId"))
@@ -62,4 +63,3 @@ if __name__ == "__main__":
           f"updatedRange: {result.get('updates').get('updatedRange')}\n"
           f"updatedRows: {result.get('updates').get('updatedRows')}\n"
           f"link: {sheet_link}")
-
